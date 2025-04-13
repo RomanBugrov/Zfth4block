@@ -1,0 +1,74 @@
+Вот реализация статического массива:
+
+#include <stdlib.h>
+#include <stdio.h>
+
+#define TYPE int
+
+typedef struct {
+    TYPE *value;
+    int code;
+} output_t;
+
+typedef struct {
+    TYPE *head;
+    unsigned int size;
+} stat_arr_t;
+
+// Инициализация статического массива
+stat_arr_t *init_sa(unsigned int size) {
+    stat_arr_t *arr = (stat_arr_t *)malloc(sizeof(stat_arr_t));
+    if (arr != NULL) {
+        arr->head = (TYPE *)malloc(size * sizeof(TYPE));
+        if (arr->head != NULL) {
+            arr->size = size;
+        } else {
+            free(arr);
+            arr = NULL;
+        }
+    }
+    return arr;
+}
+
+// Получение значения из статического массива
+output_t get_sa(stat_arr_t *arr, unsigned int pos) {
+    output_t output;
+    if (arr != NULL && pos < arr->size) {
+        output.code = 0;
+        output.value = &(arr->head[pos]);
+    } else {
+        output.code = 1;
+        output.value = NULL;
+    }
+    return output;
+}
+
+// Установка значения в статический массив
+output_t set_sa(stat_arr_t *arr, unsigned int pos, TYPE *val) {
+    output_t output;
+    if (arr != NULL && pos < arr->size) {
+        arr->head[pos] = *val;
+        output.code = 0;
+        output.value = NULL;
+    } else {
+        output.code = 1;
+        output.value = NULL;
+    }
+    return output;
+}
+
+// Получение размера статического массива
+unsigned int size_sa(stat_arr_t *arr) {
+    if (arr != NULL) {
+        return arr->size;
+    }
+    return 0;
+}
+
+// Освобождение памяти
+void finalize_sa(stat_arr_t *arr) {
+    if (arr != NULL) {
+        free(arr->head);
+        free(arr);
+    }
+}
