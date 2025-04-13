@@ -1,0 +1,25 @@
+Часть 1. Функция для вычисления суммы полей val:
+
+int plus_basic(a_t *a, b_t *b) {
+    return a->val + b->val;
+}
+
+Часть 2. Функция для записи суммы в поле val структуры c:
+
+void plus_intermediate(a_t *a, b_t *b, c_t *c) {
+    c->val = a->val + b->val;
+}
+
+Часть 3. Функция для создания новой структуры c_t и возврата её указателя:
+
+c_t *plus_advanced(a_t *a, b_t *b) {
+    c_t *c = (c_t *)malloc(sizeof(c_t)); // Не забудьте подключить stdlib.h
+    if (c != NULL) {
+        c->val = a->val + b->val;
+    }
+    return c;
+}
+
+Также необходимо включить необходимые заголовочные файлы:
+
+#include <stdlib.h>
