@@ -1,0 +1,114 @@
+Вот реализация динамического массива:
+
+#include <stdlib.h>
+#include <stdio.h>
+
+#define TYPE int
+
+typedef struct {
+    int code;
+} output_t;
+
+typedef struct {
+    TYPE *array;
+    unsigned int size;
+    unsigned int capacity;
+} dyn_arr_t;
+
+// Инициализация динамического массива с заданным размером
+dyn_arr_t *init_da(unsigned int size) {
+    dyn_arr_t *arr = (dyn_arr_t *)malloc(sizeof(dyn_arr_t));
+    if (arr != NULL) {
+        arr->array = (TYPE *)malloc(size * sizeof(TYPE));
+        if (arr->array != NULL) {
+            arr->size = 0;
+            arr->capacity = size;
+        } else {
+            free(arr);
+            arr = NULL;
+        }
+    }
+    return arr;
+}
+
+// Инициализация динамического массива без заданного размера
+dyn_arr_t *basic_init_da(void) {
+    static unsigned int basic_size = 8;
+    return init_da(basic_size);
+}
+
+// Получение элемента из динамического массива
+output_t get_da(dyn_arr_t *arr, unsigned int pos) {
+    output_t output;
+    if (arr != NULL && pos < arr->size) {
+        output.code = 0;
+        output.value = &(arr->array[pos]);
+    } else {
+        output.code = 1;
+        output.value = NULL;
+    }
+    return output;
+}
+
+// Установка значения в динамический массив
+output_t set_da(dyn_arr_t *arr, unsigned int pos, TYPE *val) {
+    output_t output;
+    if (arr != NULL && pos < arr->size) {
+        arr->array[pos] = *val;
+        output.code = 0;
+        output.value = NULL;
+    } else {
+        output.code = 1;
+        output.value = NULL;
+    }
+    return output;
+}
+
+// Получение размера динамического массива
+unsigned int size_da(dyn_arr_t *arr) {
+    if (arr != NULL) {
+        return arr->size;
+    }
+    return 0;
+}
+
+// Проверка, пуст ли массив
+int is_empty_da(dyn_arr_t *arr) {
+    return arr == NULL || arr->size == 0;
+}
+
+// Добавление элемента в конец массива
+void push_back_da(dyn_arr_t *arr, TYPE *val) {
+    if (arr != NULL) {
+        if (arr->size >= arr->capacity) {
+            arr->capacity *= 2;
+            arr->array = (TYPE *)realloc(arr->array, arr->capacity * sizeof(TYPE));
+        }
+        if (arr->array != NULL) {
+            arr->array[arr->size] = *val;
+            arr->size++;
+        }
+    }
+}
+
+// Удаление последнего элемента массива
+output_t pop_back_da(dyn_arr_t *arr) {
+    output_t output;
+    if (arr != NULL && arr->size > 0) {
+        arr->size--;
+        output.code = 0;
+        output.value = &(arr->array[arr->size]);
+    } else {
+        output.code = 1;
+        output.value = NULL;
+    }
+    return output;
+}
+
+// Освобождение памяти
+void finalize_da(dyn_arr_t *arr) {
+    if (arr != NULL) {
+        free(arr->array);
+        free(arr);
+    }
+}
